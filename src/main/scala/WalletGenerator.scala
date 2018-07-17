@@ -266,13 +266,14 @@ object WalletGenerator extends App {
         if (lastKey == 0) seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
         nonceMap.put("nonce", lastKey + 1)
         pkeyMap.put(lastKey + 1, accountSeedHash)
-        println("address #    : " + (lastKey + 1))
+        println("IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!")
         println("seed         : " + seed)
+        println("address #    : " + (lastKey + 1))
         println("public key   : " + Base58.encode(publicKey))
         println("private key  : " + Base58.encode(privateKey))
         println("address      : " + address)
         println("-" * 150)
-        csv.write((lastKey + 1) + ",\"" + seed + "\"," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
+        csv.write((lastKey + 1) + "," + Base58.encode(accountSeedHash) + "," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
       }
 
     }
