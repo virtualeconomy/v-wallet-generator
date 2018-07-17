@@ -6,6 +6,7 @@ import scorex.crypto.signatures.Curve25519
 import scorex.crypto.encode.Base58
 import scopt.OptionParser
 import org.h2.mvstore.{MVMap, MVStore}
+import utils._
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "", filter: String = "", sensitive: Boolean = false)
 
@@ -13,9 +14,10 @@ object WalletGenerator extends App {
 
   val AddressesCSVFileName = "addresses.csv"
   val WalletFileName = "wallet.dat"
+  val ObsoleteWalletName = "obsolete.wallet.dat"
 
   val parser = new OptionParser[Config]("walletgenerator") {
-    head("Waves wallet generator", "1.1")
+    head("VEE wallet generator", "0.0.1")
     opt[Unit]('a', "append").action((_, c) =>
       c.copy(append = true)).text("append to existing wallet.dat / addresses.csv")
     opt[Int]('c', "count").action((x, c) =>
@@ -243,8 +245,8 @@ object WalletGenerator extends App {
     val addrVersion:Byte = 1
     val chainId:Byte = if(config.testnet) 'T' else 'W'
 
-    if (!config.append) new File(WalletFileName).delete()
-    val db: MVStore = new MVStore.Builder().fileName(WalletFileName).encryptionKey(config.password.toCharArray).compress().open()
+    if (!config.append) new File(ObsoleteWalletName).delete()
+    val db: MVStore = new MVStore.Builder().fileName(ObsoleteWalletName).encryptionKey(config.password.toCharArray).compress().open()
 
     val pkeyMap: MVMap[Int, Array[Byte]] = db.openMap("privkeys")
     val seedMap: MVMap[String, Array[Byte]] = db.openMap("seed")
