@@ -254,20 +254,25 @@ object WalletGenerator extends App {
 
     val csv = new FileWriter(AddressesCSVFileName, config.append)
 
-    for(n<-1 to config.count) {
-      val seed = generatePhrase
-      val accountSeedHash = hashChain(Array[Byte](0, 0, 0, 0) ++ seed.getBytes)
+    val seed = generatePhrase
+    println("-" * 150)
+    println("IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!")
+    println("seed         : " + seed)
+    println("-" * 150)
+
+    seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
+    nonceMap.put("nonce", config.count)
+
+    for(n <- 1 to config.count) {
+      val noncedSecret = seed + " " + n
+      val accountSeedHash = hashChain(Array[Byte](0, 0, 0, 0) ++ noncedSecret.getBytes)
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
       val unhashedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
       val address = Base58.encode(unhashedAddress ++ hashChain(unhashedAddress).take(4))
       if ((address.toUpperCase.indexOf(config.filter) > 0 && !config.sensitive) ||
           (address.indexOf(config.filter) > 0 && config.sensitive) || config.filter == "") {
         val lastKey = pkeyMap.lastKey()
-        if (lastKey == 0) seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
-        nonceMap.put("nonce", lastKey + 1)
         pkeyMap.put(lastKey + 1, accountSeedHash)
-        println("IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!")
-        println("seed         : " + seed)
         println("address #    : " + (lastKey + 1))
         println("public key   : " + Base58.encode(publicKey))
         println("private key  : " + Base58.encode(privateKey))
