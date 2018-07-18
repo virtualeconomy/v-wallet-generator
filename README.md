@@ -28,38 +28,38 @@ scala> WalletGenerator.main(Array("--testnet", "--count", "10"))
 ## Examples
 
 Generate testnet addresses. Output to screen, wallet.dat and addresses.csv.
-Case-sensitive filtering with word 'VEE' in the addresses.
 ```
-scala> WalletGenerator.main(Array("--testnet", "--count", "50000", "--filter", "VEE", "--case-sensitive"))
+scala> WalletGenerator.main(Array("--testnet", "--count", "5"))
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!
-seed         : amazing habit method reflect ahead ignore crop hover neither dial write draw evil butter camp lonely dwarf guilt
+seed         : stem extra father tail struggle dinner uphold sight canoe draw moon swim amused grab mule gadget bubble hub
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 1
-public key   : J1Uz7FGLCpKCVmwSS7RPb2iPXY5Uv3y1cDBgYtcSN73i
-private key  : 8ZsCd3QGGmurxB5yvLB1UHXZwnrVHkGZZyRE4y5hPjC7
-address      : 3N1cVnHk1VEEz5kZD6UTkFT1HF9VDKHdWYW
+public key   : 4bSPXmtHwDgJnJ6M3cq5yucTeTq6yLsHhK6kB8GEuDCk
+private key  : HiQF2DTBVZduXNMvRBYbjgjkW26nof5vhdBUuvV4xR35
+address      : 3NBPSs3sggg8px7s856JdXcSM4ZDiq5zbMv
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 2
-public key   : GgE7pFbffzoNJESA9SLTBhwy7G2cqLRgLNXZN6F2QCe3
-private key  : CKnVA2vBUMFor8hLyz5SaY83gJNW3ff9UHCAAeQx6B3o
-address      : 3MuVjDRsBUDVLwF28XTpb2PVVDVEEAUFWb7
+public key   : Ffr2sAXe1f63tQn26UTgDW3CywwUfZWXfZxUu1rGhdGS
+private key  : HAGmPmj1MXYWvTNufV1tBtr4PAuBDizq8AZqFuPk6Vhe
+address      : 3MyWVp3GiY4FcVPBiSn3x6pNQrDW5WsGKhf
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 3
-public key   : DZpR3V6x18kaD5hFHdcf4Ln3ycmmoimCcfAz98RUprtQ
-private key  : Bnh7QzXFrDWNo2RAJpgR8FLzeMqPXhTs3BY97tDXXm6h
-address      : 3MsN9mnNA5KXr1R5VEEnMYy5KbRjYFScwig
+public key   : 9cW13sEBGLb9xNQcyRbDk9VcvutnbSQTbgC1Z6mnJoSc
+private key  : GevXSAaZ56BECDXZGvENEKU2J9vkCjZeEMpJ4hid6CVx
+address      : 3N83RTfjCuXpXFSkXzMRzqFCSjzggJW7BGN
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 4
-public key   : 86DxvsHXThxVP3Nz8NDba4k3HCnSDKzMRXgYqKaBDp6Z
-private key  : AiReVo3AwLnkeqtpbxt49DdjpZdNo7PprjuBBcXX4rHS
-address      : 3NCKmqo6QRmSVEEHDctbxWMcoGfeHyayCGS
+public key   : GEYM4u8YPkFFd4eD4EALXcWv5J84b3zeMKpbNojEZfTV
+private key  : bcCeecC65MT3eVomYwYr12qVrzbnRmLQiPBPLGBWEZL
+address      : 3Mw5Bf5W4JcDWCsxMdDX44feva3eoj3yvKS
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 5
-public key   : 2bzVBm3EDeKUG5y7kfmMms4oLkZfNGgxXfMtncd2tmwv
-private key  : F1FTfFjYnrudXLhx6CWYFF9fyXuV2Wwc5xGjfaqhQbZG
-address      : 3N1Gpt1aCVEE1ygrnxwVQuBmu9XhwpgNaTP
+public key   : GZ7R3avLPwAAe7dQ9hbCUAd4pivpfS7F6sUV7mz5ky9U
+private key  : CN6ygmDqCE2ZhvLi9TVxsdWJpN9hL8NdcR3hEHWvKaEi
+address      : 3N2Ebie6iPf4Lu1eMfjL9FzU2SpsJ5GQtkr
 ------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ```
 
 Generate 100 mainnet addresses. Output to screen, wallet.dat (encrypted with 'mypassword') and addresses.csv
