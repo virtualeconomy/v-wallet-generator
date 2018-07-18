@@ -6,6 +6,7 @@ import scorex.crypto.signatures.Curve25519
 import scorex.crypto.encode.Base58
 import scopt.OptionParser
 import org.h2.mvstore.{MVMap, MVStore}
+import utils._
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "", filter: String = "", sensitive: Boolean = false)
 
@@ -13,9 +14,10 @@ object WalletGenerator extends App {
 
   val AddressesCSVFileName = "addresses.csv"
   val WalletFileName = "wallet.dat"
+  val ObsoleteWalletName = "mvstore.wallet.dat"
 
   val parser = new OptionParser[Config]("walletgenerator") {
-    head("Waves wallet generator", "1.1")
+    head("VEE wallet generator", "0.0.1")
     opt[Unit]('a', "append").action((_, c) =>
       c.copy(append = true)).text("append to existing wallet.dat / addresses.csv")
     opt[Int]('c', "count").action((x, c) =>
@@ -243,8 +245,8 @@ object WalletGenerator extends App {
     val addrVersion:Byte = 1
     val chainId:Byte = if(config.testnet) 'T' else 'W'
 
-    if (!config.append) new File(WalletFileName).delete()
-    val db: MVStore = new MVStore.Builder().fileName(WalletFileName).encryptionKey(config.password.toCharArray).compress().open()
+    if (!config.append) new File(ObsoleteWalletName).delete()
+    val db: MVStore = new MVStore.Builder().fileName(ObsoleteWalletName).encryptionKey(config.password.toCharArray).compress().open()
 
     val pkeyMap: MVMap[Int, Array[Byte]] = db.openMap("privkeys")
     val seedMap: MVMap[String, Array[Byte]] = db.openMap("seed")
@@ -252,25 +254,31 @@ object WalletGenerator extends App {
 
     val csv = new FileWriter(AddressesCSVFileName, config.append)
 
-    for(n<-1 to config.count) {
-      val seed = generatePhrase
-      val accountSeedHash = hashChain(Array[Byte](0, 0, 0, 0) ++ seed.getBytes)
+    val seed = generatePhrase
+    println("-" * 150)
+    println("IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!")
+    println("seed         : " + seed)
+    println("-" * 150)
+
+    seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
+    nonceMap.put("nonce", config.count)
+
+    for(n <- 1 to config.count) {
+      val noncedSecret = seed + " " + n
+      val accountSeedHash = hashChain(Array[Byte](0, 0, 0, 0) ++ noncedSecret.getBytes)
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
       val unhashedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
       val address = Base58.encode(unhashedAddress ++ hashChain(unhashedAddress).take(4))
       if ((address.toUpperCase.indexOf(config.filter) > 0 && !config.sensitive) ||
           (address.indexOf(config.filter) > 0 && config.sensitive) || config.filter == "") {
         val lastKey = pkeyMap.lastKey()
-        if (lastKey == 0) seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
-        nonceMap.put("nonce", lastKey + 1)
         pkeyMap.put(lastKey + 1, accountSeedHash)
         println("address #    : " + (lastKey + 1))
-        println("seed         : " + seed)
         println("public key   : " + Base58.encode(publicKey))
         println("private key  : " + Base58.encode(privateKey))
         println("address      : " + address)
         println("-" * 150)
-        csv.write((lastKey + 1) + ",\"" + seed + "\"," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
+        csv.write((lastKey + 1) + "," + Base58.encode(accountSeedHash) + "," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
       }
 
     }
