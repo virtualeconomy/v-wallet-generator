@@ -7,7 +7,7 @@ import scorex.crypto.encode.Base58
 import scopt.OptionParser
 import org.h2.mvstore.{MVMap, MVStore}
 import play.api.libs.json._
-import utils._
+import utils.JsonFileStorage
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "", filter: String = "", sensitive: Boolean = false)
 
@@ -274,8 +274,8 @@ object WalletGenerator extends App {
       val noncedSecret = seed + " " + n
       val accountSeedHash = hashChain(Array[Byte](0, 0, 0, 0) ++ noncedSecret.getBytes)
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
-      val unhashedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
-      val address = Base58.encode(unhashedAddress ++ hashChain(unhashedAddress).take(4))
+      val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
+      val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
       if ((address.toUpperCase.indexOf(config.filter) > 0 && !config.sensitive) ||
           (address.indexOf(config.filter) > 0 && config.sensitive) || config.filter == "") {
         val lastKey = pkeyMap.lastKey()
