@@ -6,9 +6,13 @@ import scorex.crypto.signatures.Curve25519
 import scorex.crypto.encode.Base58
 import scopt.OptionParser
 import org.h2.mvstore.{MVMap, MVStore}
-import utils._
+import play.api.libs.json._
+import utils.JsonFileStorage
+import com.google.common.primitives.{Bytes, Ints}
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "", filter: String = "", sensitive: Boolean = false)
+
+case class WalletData(seed: Array[Byte], accountSeeds: Set[Array[Byte]], nonce: Int)
 
 object WalletGenerator extends App {
 
@@ -240,6 +244,8 @@ object WalletGenerator extends App {
 
   private def hashChain(noncedSecret: Array[Byte]): Array[Byte] = Keccak256.hash(Blake2b256.hash(noncedSecret))
 
+  private implicit val walletFormat: Format[WalletData] = Json.format
+
   parser.parse(args, Config()) map { config =>
 
     val addrVersion:Byte = 1
@@ -263,16 +269,20 @@ object WalletGenerator extends App {
     seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
     nonceMap.put("nonce", config.count)
 
+    var accounts = scala.collection.mutable.Set[Array[Byte]]()
+
     for(n <- 1 to config.count) {
-      val noncedSecret = seed + " " + n
-      val accountSeedHash = hashChain(Array[Byte](0, 0, 0, 0) ++ noncedSecret.getBytes)
+      val accountSeedHash = hashChain(Ints.toByteArray(n) ++ seed.getBytes)
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
-      val unhashedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
-      val address = Base58.encode(unhashedAddress ++ hashChain(unhashedAddress).take(4))
+      val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
+      val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
       if ((address.toUpperCase.indexOf(config.filter) > 0 && !config.sensitive) ||
           (address.indexOf(config.filter) > 0 && config.sensitive) || config.filter == "") {
         val lastKey = pkeyMap.lastKey()
         pkeyMap.put(lastKey + 1, accountSeedHash)
+
+        accounts.add(Base58.encode(accountSeedHash).getBytes)
+
         println("address #    : " + (lastKey + 1))
         println("public key   : " + Base58.encode(publicKey))
         println("private key  : " + Base58.encode(privateKey))
@@ -286,6 +296,9 @@ object WalletGenerator extends App {
     db.close()
     csv.close()
 
+    val walletData = WalletData(Base58.encode(seed.getBytes).getBytes, accounts.toSet, config.count)
+    val walletFileName = new java.io.File(WalletFileName).getCanonicalPath
+    JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey("")))
   }
 
 }
