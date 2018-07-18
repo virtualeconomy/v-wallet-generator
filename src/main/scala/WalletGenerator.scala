@@ -282,27 +282,25 @@ object WalletGenerator extends App {
 
     var lastNonce = 0
     if (config.append) lastNonce = walletData.nonce
-    var newKey = lastNonce
-
 
     var accounts = scala.collection.mutable.Set[ByteStr]()
 
     for(n <- 1 to config.count) {
-      val accountSeedHash = hashChain(Ints.toByteArray(lastNonce + n-1) ++ seed.getBytes)
+      val nonce = lastNonce + n - 1
+      val accountSeedHash = hashChain(Ints.toByteArray(nonce) ++ seed.getBytes)
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
       val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
       val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
       if ((address.toUpperCase.indexOf(config.filter) > 0 && !config.sensitive) ||
           (address.indexOf(config.filter) > 0 && config.sensitive) || config.filter == "") {
-        newKey += 1
         accounts.add(ByteStr(accountSeedHash))
 
-        println("address #    : " + newKey)
+        println("address #    : " + nonce)
         println("public key   : " + Base58.encode(publicKey))
         println("private key  : " + Base58.encode(privateKey))
         println("address      : " + address)
         println("-" * 150)
-        csv.write(newKey + "," + Base58.encode(accountSeedHash) + "," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
+        csv.write(nonce + "," + Base58.encode(accountSeedHash) + "," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
       }
 
     }
