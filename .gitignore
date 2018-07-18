@@ -2,3 +2,5 @@
 target/
 *.class
 .DS_Store
+*.dat
+*.csv
