@@ -2,22 +2,29 @@
 This tool generates Waves addresses with 15 word seeds compatible with Waves Lite Client and Waves Full Node. The output is exported to a 'wallet.dat' for the Full Node and to a CSV file, 'addresses.csv', which contains the list of all generated addresses with seeds, private keys and public keys.
 
 
-## Usage
+## Usage Java
 
 ```
 $ java -jar walletgenerator.jar --help
 Waves wallet generator 1.1
 Usage: walletgenerator [options]
 
-  -a, --append            append to existing wallet.dat / addresses.csv
+  -a, --append            [TODO] append to existing wallet.dat / addresses.csv
   -c, --count <value>     number of addresses to generate
   -t, --testnet           generate testnet addresses
-  -p, --password <value>  wallet password
+  -p, --password <value>  [TODO] wallet password
   -f, --filter <value>    filter addresses with a specific pattern
   -s, --case-sensitive    case sensitive filtering
   --help                  prints this help message
 ```	
-	
+
+## Usage Sbt Console
+
+```
+$ sbt console
+scala> WalletGenerator.main(Array("--testnet", "--count", "10"))
+```
+
 ## Examples
 
 Generate 3 testnet addresses. Output to screen, wallet.dat and addresses.csv
@@ -92,3 +99,4 @@ private key  : F188SVQneiUmWsV4xJruR2mZVzsvRdWYKG2EWVPidfH9
 address      : 3PQAzuDDW9AhBWAVEbijz5Ttp8xv6A298gv
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
