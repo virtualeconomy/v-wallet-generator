@@ -1,4 +1,4 @@
-# Waves wallet generator
+# VEE wallet generator
 This tool generates Waves addresses with 15 word seeds compatible with Waves Lite Client and Waves Full Node. The output is exported to a 'wallet.dat' for the Full Node and to a CSV file, 'addresses.csv', which contains the list of all generated addresses with seeds, private keys and public keys.
 
 
@@ -27,26 +27,38 @@ scala> WalletGenerator.main(Array("--testnet", "--count", "10"))
 
 ## Examples
 
-Generate 3 testnet addresses. Output to screen, wallet.dat and addresses.csv
+Generate testnet addresses. Output to screen, wallet.dat and addresses.csv.
+Case-sensitive filtering with word 'VEE' in the addresses.
 ```
-$ java -jar walletgenerator.jar -t -c 3
+scala> WalletGenerator.main(Array("--testnet", "--count", "50000", "--filter", "VEE", "--case-sensitive"))
+------------------------------------------------------------------------------------------------------------------------------------------------------
+IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!
+seed         : amazing habit method reflect ahead ignore crop hover neither dial write draw evil butter camp lonely dwarf guilt
+------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 1
-seed         : pull assist echo fiscal learn lens feature boil frog banner term enter capable speed tone buddy mobile notable
-public key   : 4U6LakyXD21Pz6JjmDys6gEBPihqT1qS4XVZefZ2H6Nq
-private key  : 5soX8ym1dZNvupoP9nFNbuUy6S3dDxoEtoakfaHSvLH7
-address      : 3MswUSYbZVdYiysaLQmSFzd9mkhJfo83mqN
+public key   : J1Uz7FGLCpKCVmwSS7RPb2iPXY5Uv3y1cDBgYtcSN73i
+private key  : 8ZsCd3QGGmurxB5yvLB1UHXZwnrVHkGZZyRE4y5hPjC7
+address      : 3N1cVnHk1VEEz5kZD6UTkFT1HF9VDKHdWYW
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 2
-seed         : evil hotel logic open ordinary adjust hand glow neither planet mind acquire reunion maximum visual involve fence pumpkin
-public key   : 4wB5UkAoTMikTicUpwcc3GbchNjBJCF5k4eYRvKf4igS
-private key  : HjJanFFVy5kYVX6qErcYghQHmZNc6iZq9RnYkjULQaUN
-address      : 3N4Htq8QkUAwNAuZUD5StDGqCqwhgU9AyhK
+public key   : GgE7pFbffzoNJESA9SLTBhwy7G2cqLRgLNXZN6F2QCe3
+private key  : CKnVA2vBUMFor8hLyz5SaY83gJNW3ff9UHCAAeQx6B3o
+address      : 3MuVjDRsBUDVLwF28XTpb2PVVDVEEAUFWb7
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 3
-seed         : tone devote ring relief injury sorry cute drive end favorite rather arm host battle drill aspect lounge vivid
-public key   : 9GiVbdkZDzUFpAsMamtHXiCqq5yn3Cuke2B3hvEEJDD4
-private key  : H9scXQ47Y6ZuukNfYYoo4pzeVDMKWv9VvJM67CqexW3j
-address      : 3MuamA5LeQFarEmVYvSdcgzEMCPkeCQVDfP
+public key   : DZpR3V6x18kaD5hFHdcf4Ln3ycmmoimCcfAz98RUprtQ
+private key  : Bnh7QzXFrDWNo2RAJpgR8FLzeMqPXhTs3BY97tDXXm6h
+address      : 3MsN9mnNA5KXr1R5VEEnMYy5KbRjYFScwig
+------------------------------------------------------------------------------------------------------------------------------------------------------
+address #    : 4
+public key   : 86DxvsHXThxVP3Nz8NDba4k3HCnSDKzMRXgYqKaBDp6Z
+private key  : AiReVo3AwLnkeqtpbxt49DdjpZdNo7PprjuBBcXX4rHS
+address      : 3NCKmqo6QRmSVEEHDctbxWMcoGfeHyayCGS
+------------------------------------------------------------------------------------------------------------------------------------------------------
+address #    : 5
+public key   : 2bzVBm3EDeKUG5y7kfmMms4oLkZfNGgxXfMtncd2tmwv
+private key  : F1FTfFjYnrudXLhx6CWYFF9fyXuV2Wwc5xGjfaqhQbZG
+address      : 3N1Gpt1aCVEE1ygrnxwVQuBmu9XhwpgNaTP
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
@@ -58,45 +70,5 @@ $ java -jar walletgenerator.jar -c 100 -p mypassword
 Generate 100 addresses. Output to screen, append to existing wallet.dat (encrypted with 'mypassword') and addresses.csv
 ```
 $ java -jar walletgenerator.jar -a -c 100 -p mypassword  
-```
-
-Generate 100000 mainnet addresses, filter addresses containing the word 'WAVE' (case insensitive)
-```
-$ java -jar walletgenerator.jar -c 100000 -f WAVE   
-address #    : 1
-seed         : state upset better opera candy jelly shallow clutch jealous lunch laugh tomorrow perfect chuckle orphan salad ball filter
-public key   : 6MKTLcaWAVcSqgYAqCrX1WU3eBnHY8J1yFk8Kww6wzmt
-private key  : 26XS7rfzXo5RLCxBwAPkuM8tVz5RDVTWCcwvMfWqE2eM
-address      : 3PJYrdbdhWaVeZ9MAMAmmSiYxozzbgCpwCH
-------------------------------------------------------------------------------------------------------------------------------------------------------
-address #    : 2
-seed         : pond limit much good fragile memory labor milk piece year slice system ball awake hurry level rabbit vacant
-public key   : 2h5RwgVx8JFBGXFouKCmz564nV3FZhaFzJLTJPAD32B2
-private key  : 4HdCJUZaNHqGmhQpHhi2ztokQAzKTpavK52aaYoy5AP1
-address      : 3P6yem17BkSKWy27wavEogyzbQ3oo5LpUCi
-------------------------------------------------------------------------------------------------------------------------------------------------------
-address #    : 3
-seed         : clog melody they edit kite shadow able diet faith okay grow tail gap entire picnic dry chaos glance
-public key   : 54Q7nv5dZ3stBoYsCHU8ikPHLwxM3VbRgfAXbKoGBfhS
-private key  : HBB4npdpKkDJh5jNv1eu7vX1FHXjkBgagyoCk4nCAmfC
-address      : 3PPdLckWAveUmvHUsvsSJeRUxCJxqNGGpfQ
-------------------------------------------------------------------------------------------------------------------------------------------------------
-```
-
-Same as above but case sensitive
-```
-$ java -jar walletgenerator.jar -c 100000 -p mypassword -f WAVE -s  
-address #    : 1
-seed         : legal ostrich sight enter guitar pen stock cattle dose tattoo define gossip author escape mass ten insane surround
-public key   : EE76QcW273AAhkQjHhXf4cE211byqACdEHLR2pU4KsJm
-private key  : AjM5PK4ACEPoPWeJ24o81Ag7psZgBk9Tz55LR5NDsryV
-address      : 3PHhB1CvS6LcHNZSZWAVEv1ZTKDd7rFj9hf
-------------------------------------------------------------------------------------------------------------------------------------------------------
-address #    : 2
-seed         : sail taste drink palm wrist antique few idea moon flat try blossom exist wide alien honey hidden rich
-public key   : 9z2Gk2ykSHWJwqBbr2sbohxgP99w8aX57agmfLWDi1nP
-private key  : F188SVQneiUmWsV4xJruR2mZVzsvRdWYKG2EWVPidfH9
-address      : 3PQAzuDDW9AhBWAVEbijz5Ttp8xv6A298gv
-------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
