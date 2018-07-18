@@ -10,7 +10,8 @@ import play.api.libs.json._
 import utils.{JsonFileStorage,ByteStr}
 import com.google.common.primitives.{Bytes, Ints}
 
-case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "", filter: String = "", sensitive: Boolean = false)
+case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "",
+                  filter: String = "", sensitive: Boolean = false, walletSeed:String = null)
 
 case class WalletData(seed: ByteStr, accountSeeds: Set[ByteStr], nonce: Int)
 
@@ -34,6 +35,8 @@ object WalletGenerator extends App {
       c.copy(filter = x)).text("filter addresses with a specific pattern")
     opt[Unit]('s', "case-sensitive").action((_, c) =>
       c.copy(sensitive = true)).text("case sensitive filtering")
+    opt[String]('k', "seed").action((x, c) =>
+      c.copy(walletSeed = x)).text("set wallet seed for account recovery")
     help("help") text("prints this help message")
   }
   private def generatePhrase = {
@@ -260,18 +263,33 @@ object WalletGenerator extends App {
 
     val csv = new FileWriter(AddressesCSVFileName, config.append)
 
-    val seed = generatePhrase
+    var seed: String = null
+    if ((!config.append) && (config.walletSeed!=null)) {
+      seed = config.walletSeed
+    } else if (seedMap.containsKey("seed")) {
+      seed = Base58.decode(seedMap.get("seed").toString).toString
+    }
+    if (seed == null) seed = generatePhrase
     println("-" * 150)
     println("IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!")
     println("seed         : " + seed)
     println("-" * 150)
 
-    seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
-    nonceMap.put("nonce", config.count)
+    var last_nonce = 0
+    if (!config.append){
+      //Create new
+      seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
+      nonceMap.put("nonce", config.count)
+    } else {
+      //Append
+      last_nonce = nonceMap.get("nonce")
+      nonceMap.put("nonce", last_nonce + config.count)
+    }
+
 
     var accounts = scala.collection.mutable.Set[ByteStr]()
 
-    for(n <- 1 to config.count) {
+    for(n <- last_nonce + 1 to config.count) {
       val accountSeedHash = hashChain(Ints.toByteArray(n-1) ++ seed.getBytes)
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
       val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
@@ -300,6 +318,7 @@ object WalletGenerator extends App {
     val walletData = WalletData(newSeed, accounts.toSet, config.count)
     val walletFileName = new java.io.File(WalletFileName).getCanonicalPath
     JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
+    true
   }
 
 }
