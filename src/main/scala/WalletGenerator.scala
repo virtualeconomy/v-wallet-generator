@@ -1,12 +1,14 @@
 import java.io.{File, FileWriter}
+import java.nio.charset.StandardCharsets
 import java.security.SecureRandom
+
 import scorex.crypto.hash.Blake2b256
 import scorex.crypto.hash.Keccak256
 import scorex.crypto.signatures.Curve25519
 import scorex.crypto.encode.Base58
 import scopt.OptionParser
 import play.api.libs.json._
-import utils.{JsonFileStorage,ByteStr}
+import utils.{ByteStr, JsonFileStorage}
 import com.google.common.primitives.{Bytes, Ints}
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "",
@@ -253,18 +255,24 @@ object WalletGenerator extends App {
 
     val addrVersion:Byte = 1
     val chainId:Byte = if(config.testnet) 'T' else 'W'
-    val walletFileName = new java.io.File(WalletFileName).getCanonicalPath
+    val WalletFile = new java.io.File(WalletFileName)
+    val walletFileName = WalletFile.getCanonicalPath
 
     if (!config.append) new File(walletFileName).delete()
-    var walletData: WalletData = JsonFileStorage.load[WalletData](walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
+    var walletData: WalletData = null
+    if (WalletFile.exists()) {
+      walletData = JsonFileStorage.load[WalletData](walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
+    } else {
+      walletData = WalletData(ByteStr.empty, Set.empty, 0)
+    }
 
     val csv = new FileWriter(AddressesCSVFileName, config.append)
 
     var seed: String = null
     if ((!config.append) && (config.walletSeed!=null)) {
       seed = config.walletSeed
-    } else {
-      seed = walletData.seed.arr.toString
+    } else if (walletData.seed != ByteStr.empty){
+      seed = new String(walletData.seed.arr, StandardCharsets.US_ASCII)
     }
     if (seed == null) seed = generatePhrase
     println("-" * 150)
@@ -273,21 +281,20 @@ object WalletGenerator extends App {
     println("-" * 150)
 
     var lastNonce = 0
-    if (!config.append) lastNonce = walletData.nonce
+    if (config.append) lastNonce = walletData.nonce
     var newKey = lastNonce
 
 
     var accounts = scala.collection.mutable.Set[ByteStr]()
 
-    for(n <- lastNonce + 1 to config.count) {
-      val accountSeedHash = hashChain(Ints.toByteArray(n-1) ++ seed.getBytes)
+    for(n <- 1 to config.count) {
+      val accountSeedHash = hashChain(Ints.toByteArray(lastNonce + n-1) ++ seed.getBytes)
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
       val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
       val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
       if ((address.toUpperCase.indexOf(config.filter) > 0 && !config.sensitive) ||
           (address.indexOf(config.filter) > 0 && config.sensitive) || config.filter == "") {
         newKey += 1
-
         accounts.add(ByteStr(accountSeedHash))
 
         println("address #    : " + newKey)
@@ -302,7 +309,7 @@ object WalletGenerator extends App {
 
     csv.close()
 
-    val newSeed = ByteStr(Base58.encode(seed.getBytes).getBytes)
+    val newSeed = ByteStr(seed.getBytes)
     walletData = WalletData(newSeed, accounts.toSet, lastNonce + config.count)
 
     JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
