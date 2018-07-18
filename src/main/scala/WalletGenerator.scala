@@ -272,7 +272,7 @@ object WalletGenerator extends App {
     if ((!config.append) && (config.walletSeed!=null)) {
       seed = config.walletSeed
     } else if (walletData.seed != ByteStr.empty){
-      seed = new String(walletData.seed.arr, StandardCharsets.US_ASCII)
+      seed = new String(walletData.seed.arr, StandardCharsets.UTF_8)
     }
     if (seed == null) seed = generatePhrase
     println("-" * 150)
