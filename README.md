@@ -15,6 +15,7 @@ Usage: walletgenerator [options]
   -p, --password <value>  [TODO] wallet password
   -f, --filter <value>    filter addresses with a specific pattern
   -s, --case-sensitive    case sensitive filtering
+  -k, --seed <value>      set wallet seed for address recovery
   --help                  prints this help message
 ```	
 
@@ -72,3 +73,7 @@ Generate 100 addresses. Output to screen, append to existing wallet.dat (encrypt
 $ java -jar walletgenerator.jar -a -c 100 -p mypassword  
 ```
 
+Recovery 10 addresses by input seed. Output to screen, wallet.dat (encrypted with 'mypassword') and addresses.csv
+```
+$ java -jar walletgenerator.jar -c 10 -p mypassword -k "stem extra father tail struggle dinner uphold sight canoe draw moon swim amused grab mule gadget bubble hub"
+```
