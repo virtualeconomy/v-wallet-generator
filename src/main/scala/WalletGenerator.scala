@@ -272,7 +272,7 @@ object WalletGenerator extends App {
     var accounts = scala.collection.mutable.Set[ByteStr]()
 
     for(n <- 1 to config.count) {
-      val accountSeedHash = hashChain(Ints.toByteArray(n) ++ seed.getBytes)
+      val accountSeedHash = hashChain(Ints.toByteArray(n-1) ++ seed.getBytes)
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
       val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
       val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
