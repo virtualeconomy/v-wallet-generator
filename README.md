@@ -6,7 +6,7 @@ This tool generates Waves addresses with 15 word seeds compatible with Waves Lit
 
 ```
 $ java -jar walletgenerator.jar --help
-Waves wallet generator 1.1
+VEE wallet generator 0.0.1
 Usage: walletgenerator [options]
 
   -a, --append            [TODO] append to existing wallet.dat / addresses.csv
