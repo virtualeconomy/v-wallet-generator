@@ -7,12 +7,12 @@ import scorex.crypto.encode.Base58
 import scopt.OptionParser
 import org.h2.mvstore.{MVMap, MVStore}
 import play.api.libs.json._
-import utils.JsonFileStorage
+import utils.{JsonFileStorage,ByteStr}
 import com.google.common.primitives.{Bytes, Ints}
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "", filter: String = "", sensitive: Boolean = false)
 
-case class WalletData(seed: Array[Byte], accountSeeds: Set[Array[Byte]], nonce: Int)
+case class WalletData(seed: ByteStr, accountSeeds: Set[ByteStr], nonce: Int)
 
 object WalletGenerator extends App {
 
@@ -269,7 +269,7 @@ object WalletGenerator extends App {
     seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
     nonceMap.put("nonce", config.count)
 
-    var accounts = scala.collection.mutable.Set[Array[Byte]]()
+    var accounts = scala.collection.mutable.Set[ByteStr]()
 
     for(n <- 1 to config.count) {
       val accountSeedHash = hashChain(Ints.toByteArray(n) ++ seed.getBytes)
@@ -281,7 +281,7 @@ object WalletGenerator extends App {
         val lastKey = pkeyMap.lastKey()
         pkeyMap.put(lastKey + 1, accountSeedHash)
 
-        accounts.add(Base58.encode(accountSeedHash).getBytes)
+        accounts.add(ByteStr(accountSeedHash))
 
         println("address #    : " + (lastKey + 1))
         println("public key   : " + Base58.encode(publicKey))
@@ -296,9 +296,10 @@ object WalletGenerator extends App {
     db.close()
     csv.close()
 
-    val walletData = WalletData(Base58.encode(seed.getBytes).getBytes, accounts.toSet, config.count)
+    val newSeed = ByteStr(Base58.encode(seed.getBytes).getBytes)
+    val walletData = WalletData(newSeed, accounts.toSet, config.count)
     val walletFileName = new java.io.File(WalletFileName).getCanonicalPath
-    JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey("")))
+    JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
   }
 
 }
