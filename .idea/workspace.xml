@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d2d5546b-13fc-4ccd-9d35-5d5434a4b18f" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sbt.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/WalletGenerator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/WalletGenerator.scala" afterDir="false" />
-    </list>
+    <list default="true" id="d2d5546b-13fc-4ccd-9d35-5d5434a4b18f" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path="$PROJECT_DIR$/project/project/target/" />
     <ignored path="$PROJECT_DIR$/project/target/" />
@@ -26,20 +19,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="build.properties" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/project/build.properties">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="17" selection-start-column="17" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="WalletGenerator.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/WalletGenerator.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="4260">
-              <caret line="305" lean-forward="true" selection-start-line="305" selection-end-line="305" />
+              <caret line="305" selection-start-line="305" selection-end-line="305" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -51,7 +35,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/scala/utils/ByteStr.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-60">
-              <caret line="5" column="21" lean-forward="true" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
+              <caret line="5" column="21" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
               <folding>
                 <element signature="e#34#61#0" expanded="true" />
               </folding>
@@ -252,6 +236,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="954" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -301,7 +286,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/utils/ByteStr.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-60">
-          <caret line="5" column="21" lean-forward="true" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
+          <caret line="5" column="21" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
           <folding>
             <element signature="e#34#61#0" expanded="true" />
           </folding>
@@ -318,7 +303,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/WalletGenerator.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4260">
-          <caret line="305" lean-forward="true" selection-start-line="305" selection-end-line="305" />
+          <caret line="305" selection-start-line="305" selection-end-line="305" />
           <folding>
             <element signature="e#0#33#0" expanded="true" />
           </folding>
