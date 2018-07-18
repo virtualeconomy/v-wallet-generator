@@ -8,6 +8,7 @@ import scopt.OptionParser
 import org.h2.mvstore.{MVMap, MVStore}
 import play.api.libs.json._
 import utils.JsonFileStorage
+import com.google.common.primitives.{Bytes, Ints}
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "", filter: String = "", sensitive: Boolean = false)
 
@@ -271,8 +272,7 @@ object WalletGenerator extends App {
     var accounts = scala.collection.mutable.Set[Array[Byte]]()
 
     for(n <- 1 to config.count) {
-      val noncedSecret = seed + " " + n
-      val accountSeedHash = hashChain(Array[Byte](0, 0, 0, 0) ++ noncedSecret.getBytes)
+      val accountSeedHash = hashChain(Ints.toByteArray(n) ++ seed.getBytes)
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
       val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
       val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
