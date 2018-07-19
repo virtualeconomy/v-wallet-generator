@@ -9,10 +9,10 @@ import scorex.crypto.encode.Base58
 import scopt.OptionParser
 import play.api.libs.json._
 import utils.{ByteStr, JsonFileStorage}
-import com.google.common.primitives.{Bytes, Ints}
+import com.google.common.primitives.Ints
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "",
-                  filter: String = "", sensitive: Boolean = false, walletSeed:String = null, useJson:Boolean = true)
+                  filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true)
 
 case class WalletData(seed: ByteStr, accountSeeds: Set[ByteStr], nonce: Int)
 
@@ -36,8 +36,8 @@ object WalletGenerator extends App {
     opt[Unit]('s', "case-sensitive").action((_, c) =>
       c.copy(sensitive = true)).text("case sensitive filtering")
     opt[String]('k', "seed").action((x, c) =>
-      c.copy(walletSeed = x)).text("set wallet seed for account recovery")
-    opt[Unit]('j', "json").action((_, c) =>
+      c.copy(seed = x)).text("set wallet seed for account recovery")
+    opt[Unit]('j', "use-json").action((_, c) =>
       c.copy(useJson = true)).text("load JSON format wallet data (MVStore will be deprecated)")
     help("help") text("prints this help message")
   }
@@ -269,8 +269,8 @@ object WalletGenerator extends App {
     val csv = new FileWriter(AddressesCSVFileName, config.append)
 
     var seed: String = null
-    if ((!config.append) && (config.walletSeed!=null)) {
-      seed = config.walletSeed
+    if ((!config.append) && config.seed!=null) {
+      seed = config.seed
     } else if (walletData.seed != ByteStr.empty){
       seed = new String(walletData.seed.arr, StandardCharsets.UTF_8)
     }
