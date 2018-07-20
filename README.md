@@ -20,6 +20,13 @@ Usage: walletgenerator [options]
   --help                  prints this help message
 ```	
 
+## Usage Sbt
+
+```
+$ sbt
+sbt:walletgenerator> run --testnet
+```
+
 ## Usage Sbt Console
 
 ```
@@ -31,7 +38,7 @@ scala> WalletGenerator.main(Array("--testnet", "--count", "10"))
 
 Generate testnet addresses. Output to screen, wallet.dat and addresses.csv.
 ```
-scala> WalletGenerator.main(Array("--testnet", "--count", "3"))
+sbt:walletgenerator> run --testnet --count 3
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!
 seed         : dance gaze inquiry buddy census embrace report wall wolf flip grant injury middle mix split journey blade body
