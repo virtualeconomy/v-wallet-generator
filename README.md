@@ -16,6 +16,7 @@ Usage: walletgenerator [options]
   -f, --filter <value>    filter addresses with a specific pattern
   -s, --case-sensitive    case sensitive filtering
   -k, --seed <value>      set wallet seed for address recovery
+  -d, --dump              dump decrypted json wallet file
   --help                  prints this help message
 ```	
 
