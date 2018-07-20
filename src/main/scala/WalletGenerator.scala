@@ -12,7 +12,8 @@ import utils.{ByteStr, JsonFileStorage}
 import com.google.common.primitives.Ints
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "",
-                  filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true)
+                  filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true,
+                  dump: Boolean = false)
 
 case class WalletData(seed: ByteStr, accountSeeds: Set[ByteStr], nonce: Int)
 
@@ -39,6 +40,8 @@ object WalletGenerator extends App {
       c.copy(seed = x)).text("set wallet seed for account recovery")
     opt[Unit]('j', "use-json").action((_, c) =>
       c.copy(useJson = true)).text("load JSON format wallet data (MVStore will be deprecated)")
+    opt[Unit]('d', "dump").action((_, c) =>
+      c.copy(dump = true)).text("dump decrypted json wallet file")
     help("help") text("prints this help message")
   }
   private def generatePhrase = {
@@ -312,6 +315,10 @@ object WalletGenerator extends App {
     walletData = WalletData(newSeed, accounts, lastNonce + config.count)
 
     JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
+    if (config.dump) {
+      println(JsonFileStorage.dump(walletFileName, Option(JsonFileStorage.prepareKey(config.password))))
+      println("-" * 150)
+    }
     true
   }
 

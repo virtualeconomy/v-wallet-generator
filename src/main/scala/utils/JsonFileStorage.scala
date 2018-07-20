@@ -83,4 +83,15 @@ object JsonFileStorage {
 
   def load[T](path: String)(implicit r: Reads[T]): T =
     load(path, None)
+
+  def dump(path: String, key: Option[SecretKeySpec] = None): String = {
+    var file: Option[BufferedSource] = None
+    try {
+      file = Option(Source.fromFile(path))
+      val data = file.get.mkString
+      key.fold(data)(k => decrypt(k, data))
+    } finally {
+      file.foreach(_.close())
+    }
+  }
 }
