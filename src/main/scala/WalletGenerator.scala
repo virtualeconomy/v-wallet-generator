@@ -15,15 +15,19 @@ case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = fa
                   filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true,
                   dump: Boolean = false)
 
-case class WalletData(seed: ByteStr, accountSeeds: Set[ByteStr], nonce: Int)
+case class WalletData(seed: ByteStr, accountSeeds: Set[ByteStr], nonce: Int, agent: String)
 
 object WalletGenerator extends App {
 
   val AddressesCSVFileName = "addresses.csv"
   val WalletFileName = "wallet.dat"
+  val WalletVersion = "0.0.1"
+  val AgentName = "VEE wallet generator"
+  val AgentVersion = "0.0.1"
+  val AgentString = "VEE wallet:" + WalletVersion + "/" + AgentName + ":" + AgentVersion
 
   val parser = new OptionParser[Config]("walletgenerator") {
-    head("VEE wallet generator", "0.0.1")
+    head(AgentName, AgentVersion)
     opt[Unit]('a', "append").action((_, c) =>
       c.copy(append = true)).text("append to existing wallet.dat / addresses.csv")
     opt[Int]('c', "count").action((x, c) =>
@@ -260,13 +264,14 @@ object WalletGenerator extends App {
     val chainId:Byte = if(config.testnet) 'T' else 'W'
     val WalletFile = new java.io.File(WalletFileName)
     val walletFileName = WalletFile.getCanonicalPath
+    val agentString = AgentString + (if(config.testnet) "/testnet" else "")
 
     if (!config.append) new File(walletFileName).delete()
     var walletData: WalletData = null
     if (WalletFile.exists()) {
       walletData = JsonFileStorage.load[WalletData](walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
     } else {
-      walletData = WalletData(ByteStr.empty, Set.empty, 0)
+      walletData = WalletData(ByteStr.empty, Set.empty, 0, agentString)
     }
 
     val csv = new FileWriter(AddressesCSVFileName, config.append)
@@ -312,7 +317,7 @@ object WalletGenerator extends App {
     csv.close()
 
     val newSeed = ByteStr(seed.getBytes)
-    walletData = WalletData(newSeed, accounts, lastNonce + config.count)
+    walletData = WalletData(newSeed, accounts, lastNonce + config.count, agentString)
 
     JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
     if (config.dump) {
