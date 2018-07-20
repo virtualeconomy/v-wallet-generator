@@ -15,7 +15,7 @@ case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = fa
                   filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true,
                   dump: Boolean = false)
 
-case class WalletData(seed: ByteStr, accountSeeds: Set[ByteStr], nonce: Int, agent: String)
+case class WalletData(seed: String, accountSeeds: Set[ByteStr], nonce: Int, agent: String)
 
 object WalletGenerator extends App {
 
@@ -271,7 +271,7 @@ object WalletGenerator extends App {
     if (WalletFile.exists()) {
       walletData = JsonFileStorage.load[WalletData](walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
     } else {
-      walletData = WalletData(ByteStr.empty, Set.empty, 0, agentString)
+      walletData = WalletData("", Set.empty, 0, agentString)
     }
 
     val csv = new FileWriter(AddressesCSVFileName, config.append)
@@ -279,8 +279,8 @@ object WalletGenerator extends App {
     var seed: String = null
     if ((!config.append) && config.seed!=null) {
       seed = config.seed
-    } else if (walletData.seed != ByteStr.empty){
-      seed = new String(walletData.seed.arr, StandardCharsets.UTF_8)
+    } else if (walletData.seed != ""){
+      seed = walletData.seed
     }
     if (seed == null || seed.equals("")) seed = generatePhrase
     println("-" * 150)
@@ -316,8 +316,7 @@ object WalletGenerator extends App {
 
     csv.close()
 
-    val newSeed = ByteStr(seed.getBytes)
-    walletData = WalletData(newSeed, accounts, lastNonce + config.count, agentString)
+    walletData = WalletData(seed, accounts, lastNonce + config.count, agentString)
 
     JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
     if (config.dump) {
