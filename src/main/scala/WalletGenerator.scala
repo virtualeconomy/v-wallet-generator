@@ -264,7 +264,7 @@ object WalletGenerator extends App {
     val chainId:Byte = if(config.testnet) 'T' else 'W'
     val WalletFile = new java.io.File(WalletFileName)
     val walletFileName = WalletFile.getCanonicalPath
-    val agentString = AgentString + (if(config.testnet) "/testnet" else "")
+    val agentString = AgentString + (if(config.testnet) "/testnet" else "/mainnet")
 
     if (config.decrypt) {
       if (WalletFile.exists()) {
