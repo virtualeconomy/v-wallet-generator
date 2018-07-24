@@ -15,7 +15,7 @@ case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = fa
                   filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true,
                   decrypt: Boolean = false)
 
-case class WalletData(seed: String, accountSeeds: Set[ByteStr], nonce: Int, agent: String)
+case class WalletData(seed: String, accountSeeds: Set[ByteStr], nonce: Long, agent: String)
 
 object WalletGenerator extends App {
 
@@ -309,15 +309,16 @@ object WalletGenerator extends App {
     println("seed         : " + seed)
     println("-" * 150)
 
-    var lastNonce = 0
+    var lastNonce : Long = 0
     if (config.append) lastNonce = walletData.nonce
 
     var accounts = walletData.accountSeeds
 
 
     for(n <- 1 to config.count) {
-      val nonce = lastNonce + n - 1
-      val accountSeedHash = hashChain(Ints.toByteArray(nonce) ++ seed.getBytes("UTF-8"))
+      val nonce : Long = lastNonce + n - 1
+      val noncedSeed = nonce.toString + seed
+      val accountSeedHash = hashChain(noncedSeed.getBytes("UTF-8"))
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
       val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
       val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
