@@ -317,7 +317,7 @@ object WalletGenerator extends App {
 
     for(n <- 1 to config.count) {
       val nonce = lastNonce + n - 1
-      val accountSeedHash = hashChain(Ints.toByteArray(nonce) ++ seed.getBytes)
+      val accountSeedHash = hashChain(Ints.toByteArray(nonce) ++ seed.getBytes("UTF-8"))
       val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
       val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
       val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
