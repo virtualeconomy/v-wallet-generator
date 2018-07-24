@@ -260,8 +260,8 @@ object WalletGenerator extends App {
 
   parser.parse(args, Config()) map { config =>
 
-    val addrVersion:Byte = 1
-    val chainId:Byte = if(config.testnet) 'T' else 'W'
+    val addrVersion:Byte = 5
+    val chainId:Byte = if(config.testnet) 'T' else 'M'
     val WalletFile = new java.io.File(WalletFileName)
     val walletFileName = WalletFile.getCanonicalPath
     val agentString = AgentString + (if(config.testnet) "/testnet" else "/mainnet")
