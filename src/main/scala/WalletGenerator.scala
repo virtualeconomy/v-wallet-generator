@@ -13,7 +13,7 @@ import com.google.common.primitives.Ints
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "",
                   filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true,
-                  dump: Boolean = false)
+                  decrypt: Boolean = false)
 
 case class WalletData(seed: String, accountSeeds: Set[ByteStr], nonce: Int, agent: String)
 
@@ -44,8 +44,8 @@ object WalletGenerator extends App {
       c.copy(seed = x)).text("set wallet seed for account recovery")
     opt[Unit]('j', "use-json").action((_, c) =>
       c.copy(useJson = true)).text("load JSON format wallet data (MVStore will be deprecated)")
-    opt[Unit]('d', "dump").action((_, c) =>
-      c.copy(dump = true)).text("dump decrypted json wallet file")
+    opt[Unit]('d', "decrypt").action((_, c) =>
+      c.copy(decrypt = true)).text("decrypt and print existing json wallet file")
     help("help") text("prints this help message")
   }
   private def generatePhrase = {
@@ -266,10 +266,31 @@ object WalletGenerator extends App {
     val walletFileName = WalletFile.getCanonicalPath
     val agentString = AgentString + (if(config.testnet) "/testnet" else "")
 
+    if (config.decrypt) {
+      if (WalletFile.exists()) {
+        println(JsonFileStorage.decrypt(walletFileName, Option(JsonFileStorage.prepareKey(config.password))))
+      }
+      else {
+        println("Wallet file not found")
+      }
+      sys.exit()
+    }
     if (!config.append) new File(walletFileName).delete()
     var walletData: WalletData = null
     if (WalletFile.exists()) {
-      walletData = JsonFileStorage.load[WalletData](walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
+      try {
+        walletData = JsonFileStorage.load[WalletData](walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
+      }
+      catch {
+        case e: JsResultException => {
+          println("Malformed JSON wallet format, try --decrypt option to dump the wallet file")
+          sys.exit()
+        }
+        case _: Throwable => {
+          println("Invalid wallet file format, try --decrypt option to dump the wallet file")
+          sys.exit()
+        }
+      }
     } else {
       walletData = WalletData("", Set.empty, 0, agentString)
     }
@@ -319,10 +340,6 @@ object WalletGenerator extends App {
     walletData = WalletData(seed, accounts, lastNonce + config.count, agentString)
 
     JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
-    if (config.dump) {
-      println(JsonFileStorage.dump(walletFileName, Option(JsonFileStorage.prepareKey(config.password))))
-      println("-" * 150)
-    }
     true
   }
 
