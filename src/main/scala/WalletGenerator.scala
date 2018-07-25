@@ -1,5 +1,4 @@
 import java.io.{File, FileWriter}
-import java.nio.charset.StandardCharsets
 import java.security.SecureRandom
 
 import scorex.crypto.hash.Blake2b256
@@ -9,7 +8,6 @@ import scorex.crypto.encode.Base58
 import scopt.OptionParser
 import play.api.libs.json._
 import utils.{ByteStr, JsonFileStorage}
-import com.google.common.primitives.Ints
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "",
                   filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true,
