@@ -289,6 +289,14 @@ object WalletGenerator extends App {
           sys.exit()
         }
       }
+      if (config.testnet && !walletData.agent.endsWith("/testnet")) {
+        println("Must not use --testnet option to append to a non-testnet wallet.")
+        sys.exit()
+      }
+      if ((!config.testnet) && !walletData.agent.endsWith("/mainnet")) {
+        println("Must use --testnet option to append to a testnet wallet.")
+        sys.exit()
+      }
     } else {
       walletData = WalletData("", Set.empty, 0, agentString)
     }
