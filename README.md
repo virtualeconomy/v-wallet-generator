@@ -1,12 +1,12 @@
 # VEE wallet generator
-This tool generates Waves addresses with 15 word seeds compatible with Waves Lite Client and Waves Full Node. The output is exported to a 'wallet.dat' for the Full Node and to a CSV file, 'addresses.csv', which contains the list of all generated addresses with seeds, private keys and public keys.
+This tool generates VEE wallet file with 15-word seed phrase. The output is exported to 'wallet.dat' which is compatible with VEE wallet format specification 1.0 and can be used with full node,  as well as a CSV file 'addresses.csv', which contains the list of all generated addresses with seeds, private keys and public keys.
 
 
 ## Usage Java
 
 ```
 $ java -jar walletgenerator.jar --help
-VEE wallet generator 0.0.1
+VEE wallet generator 0.0.2
 Usage: walletgenerator [options]
 
   -a, --append            append to existing wallet.dat / addresses.csv
@@ -39,48 +39,39 @@ scala> WalletGenerator.main(Array("--testnet", "--count", "10"))
 Generate testnet addresses. Output to screen, wallet.dat and addresses.csv.
 ```
 sbt:walletgenerator> run --testnet --count 3
+[info] Running WalletGenerator --testnet --count 3
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!
-seed         : dance gaze inquiry buddy census embrace report wall wolf flip grant injury middle mix split journey blade body
+seed         : welcome scheme bargain boring enable include slogan announce girl rough mention thought ski script vague
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 0
-public key   : FjEJ8YkX8yeQ5Qs6jg8KsTHr7K9haaLEeydRRUvu32f2
-private key  : 6xichuzHVhxNvDc3ssSevRGPZ9YT8ekP9dKViKbPgnBn
-address      : 3NCrR4y11e1yPJjStEqxxcieTxXrYkzbQBR
+address      : AU347Rei2RW5MiQqvj5kfxx8WAz9zv1oTWx
+public key   : C7yKso5wS8G4JS9sHwBZ52UBQwJsoSCeJU77njYcBL3o
+private key  : 26HceeeMgFFaTE1g3D8K3LXwZ8js5z2c4wLjE3BZpWX4
+account seed : JBRfQrMGW3icaPwQaBpYfqFzv33GhCmtvM5KX6X1s7ux
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 1
-public key   : ExAzuK7gpWpiJ8g8exVhzkUJP5wgs4jjPKmAHw5DntZq
-private key  : G8Xk3oKLMvUATmwncjoEUkgQEFvtGX9R1E3w8sc2A1Te
-address      : 3N9EkefnL5EY3urscR19Pq6cR4GyHChZer9
+address      : AUCmiawWqFGKcrtCvqtyfL7sG5koEgWewQi
+public key   : wa1UaGrtXDeFp2gZf26kZfoR3F3nnsrKGcJH3GRkmuv
+private key  : AAvMzq7PZLYSwSwHfEDE6rLr6qSRTwmZSF3V5oPxhAUU
+account seed : YQv859RZvuqaTwjs4kSZCA3WymWYEo7FcG8HiuuKMtr
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 address #    : 2
-public key   : GwcKb3Td6RMBDZwTbrJCzUDFxquiNHwrXa9B8FVBNuCn
-private key  : G6JjhkyN2U4LSErRdeTfYeppcFcXzzcrdvSz5AUh6gCH
-address      : 3MwURWkoSDqhcEnCrAVSMXsE5n6gye48fmH
+address      : AU9iHwZKDejoJYk46YRe5jiHp5ENwTT4vYG
+public key   : 47CYYUrgUESuw1amJEmtHcMVvMhabW6vt8cPJE5ZKz5m
+private key  : DS1NNXwnez3RBjiHKbG2PrdKPTxi1j13YujSQYKh2drJ
+account seed : D1SMMbPYV9f4g11qJScdz6JCe6mxfdppa7EvCqq9LNFZ
 ------------------------------------------------------------------------------------------------------------------------------------------------------
+```
 
-scala> WalletGenerator.main(Array("--testnet", "--count", "3", "--seed", "dance gaze inquiry buddy census embrace report wall wolf flip grant injury middle mix split journey blade body"))
-------------------------------------------------------------------------------------------------------------------------------------------------------
-IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!
-seed         : dance gaze inquiry buddy census embrace report wall wolf flip grant injury middle mix split journey blade body
-------------------------------------------------------------------------------------------------------------------------------------------------------
-address #    : 0
-public key   : FjEJ8YkX8yeQ5Qs6jg8KsTHr7K9haaLEeydRRUvu32f2
-private key  : 6xichuzHVhxNvDc3ssSevRGPZ9YT8ekP9dKViKbPgnBn
-address      : 3NCrR4y11e1yPJjStEqxxcieTxXrYkzbQBR
-------------------------------------------------------------------------------------------------------------------------------------------------------
-address #    : 1
-public key   : ExAzuK7gpWpiJ8g8exVhzkUJP5wgs4jjPKmAHw5DntZq
-private key  : G8Xk3oKLMvUATmwncjoEUkgQEFvtGX9R1E3w8sc2A1Te
-address      : 3N9EkefnL5EY3urscR19Pq6cR4GyHChZer9
-------------------------------------------------------------------------------------------------------------------------------------------------------
-address #    : 2
-public key   : GwcKb3Td6RMBDZwTbrJCzUDFxquiNHwrXa9B8FVBNuCn
-private key  : G6JjhkyN2U4LSErRdeTfYeppcFcXzzcrdvSz5AUh6gCH
-address      : 3MwURWkoSDqhcEnCrAVSMXsE5n6gye48fmH
-------------------------------------------------------------------------------------------------------------------------------------------------------
+Recover wallet with a seed phrase.
+```
+sbt:walletgenerator> run --testnet --count 3 --seed "welcome scheme bargain boring enable include slogan announce girl rough mention thought ski script vague"
+```
 
-
+Decrypt and print JSON wallet (with empty password).
+```
+sbt:walletgenerator> run --decrypt
 ```
 
 Generate 100 mainnet addresses. Output to screen, wallet.dat (encrypted with 'mypassword') and addresses.csv

@@ -333,9 +333,10 @@ object WalletGenerator extends App {
         accounts += ByteStr(accountSeedHash)
 
         println("address #    : " + nonce)
+        println("address      : " + address)
         println("public key   : " + Base58.encode(publicKey))
         println("private key  : " + Base58.encode(privateKey))
-        println("address      : " + address)
+        println("account seed : " + Base58.encode(accountSeedHash))
         println("-" * 150)
         csv.write(nonce + "," + Base58.encode(accountSeedHash) + "," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
       }
