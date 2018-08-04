@@ -20,9 +20,9 @@ object WalletGenerator extends App {
   val AddressesCSVFileName = "addresses.csv"
   val WalletFileName = "wallet.dat"
   val WalletVersion = "1.0rc1"
-  val AgentName = "VEE wallet generator"
+  val AgentName = "VEE Wallet Generator"
   val AgentVersion = "0.0.2"
-  val AgentString = "VEE wallet:" + WalletVersion + "/" + AgentName + ":" + AgentVersion
+  val AgentString = "VEE Wallet:" + WalletVersion + "/" + AgentName + ":" + AgentVersion
 
   val parser = new OptionParser[Config]("walletgenerator") {
     head(AgentName, AgentVersion)
