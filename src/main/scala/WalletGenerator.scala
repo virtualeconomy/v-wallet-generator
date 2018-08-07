@@ -1,6 +1,8 @@
 import java.io.{File, FileWriter}
 import java.security.SecureRandom
 
+import scala.collection.mutable.LinkedHashSet
+
 import scorex.crypto.hash.Blake2b256
 import scorex.crypto.hash.Keccak256
 import scorex.crypto.signatures.Curve25519
@@ -13,7 +15,7 @@ case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = fa
                   filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true,
                   decrypt: Boolean = false)
 
-case class WalletData(seed: String, accountSeeds: Set[ByteStr], nonce: Long, agent: String)
+case class WalletData(seed: String, accountSeeds: LinkedHashSet[ByteStr], nonce: Long, agent: String)
 
 object WalletGenerator extends App {
 
@@ -298,7 +300,7 @@ object WalletGenerator extends App {
         sys.exit()
       }
     } else {
-      walletData = WalletData("", Set.empty, 0, agentString)
+      walletData = WalletData("", LinkedHashSet.empty, 0, agentString)
     }
 
     val csv = new FileWriter(AddressesCSVFileName, config.append)
@@ -318,7 +320,7 @@ object WalletGenerator extends App {
     var lastNonce : Long = 0
     if (config.append) lastNonce = walletData.nonce
 
-    var accounts = walletData.accountSeeds
+    var accounts : LinkedHashSet[ByteStr] = walletData.accountSeeds
 
 
     for(n <- 1 to config.count) {
