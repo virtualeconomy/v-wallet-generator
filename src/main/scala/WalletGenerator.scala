@@ -322,6 +322,7 @@ object WalletGenerator extends App {
 
     var accounts : LinkedHashSet[ByteStr] = walletData.accountSeeds
 
+    csv.write("seed" + "," + seed + "\n")
 
     for(n <- 1 to config.count) {
       val nonce : Long = lastNonce + n - 1
