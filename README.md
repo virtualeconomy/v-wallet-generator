@@ -6,7 +6,7 @@ This tool generates VEE wallet file with 15-word seed phrase. The output is expo
 
 ```
 $ java -jar walletgenerator.jar --help
-VEE wallet generator 0.0.2
+VEE wallet generator 0.0.3
 Usage: walletgenerator [options]
 
   -a, --append            append to existing wallet.dat / addresses.csv
