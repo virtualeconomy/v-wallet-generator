@@ -12,7 +12,8 @@ import play.api.libs.json._
 import utils.{ByteStr, JsonFileStorage}
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "",
-                  filter: String = "", sensitive: Boolean = false, seed: String = null, decrypt: Boolean = false)
+                  filter: String = "", sensitive: Boolean = false, seed: String = null, decrypt: Boolean = false,
+                  csv: Boolean = false)
 
 case class WalletData(seed: String, accountSeeds: LinkedHashSet[ByteStr], nonce: Long, agent: String)
 
@@ -22,13 +23,13 @@ object WalletGenerator extends App {
   val WalletFileName = "wallet.dat"
   val WalletVersion = "1.0rc2"
   val AgentName = "VEE Wallet Generator"
-  val AgentVersion = "0.0.3"
+  val AgentVersion = "0.0.4"
   val AgentString = "VEE Wallet:" + WalletVersion + "/" + AgentName + ":" + AgentVersion
 
   val parser = new OptionParser[Config]("walletgenerator") {
     head(AgentName, AgentVersion)
     opt[Unit]('a', "append").action((_, c) =>
-      c.copy(append = true)).text("append to existing wallet.dat / addresses.csv")
+      c.copy(append = true)).text("append to existing wallet file")
     opt[Int]('c', "count").action((x, c) =>
       c.copy(count = x)).text("number of addresses to generate")
     opt[Unit]('t', "testnet").action((_, c) =>
@@ -42,7 +43,9 @@ object WalletGenerator extends App {
     opt[String]('k', "seed").action((x, c) =>
       c.copy(seed = x)).text("set wallet seed for account recovery")
     opt[Unit]('d', "decrypt").action((_, c) =>
-      c.copy(decrypt = true)).text("decrypt and print existing json wallet file")
+      c.copy(decrypt = true)).text("decrypt and print existing wallet file")
+    opt[Unit]('v', "csv").action((_, c) =>
+      c.copy(csv = true)).text("print keys to csv file also")
     help("help") text("prints this help message")
   }
   private def generatePhrase = {
@@ -300,7 +303,7 @@ object WalletGenerator extends App {
       walletData = WalletData("", LinkedHashSet.empty, 0, agentString)
     }
 
-    val csv = new FileWriter(AddressesCSVFileName, config.append)
+    val csvFile = if (config.csv) new FileWriter(AddressesCSVFileName, config.append) else null
 
     var seed: String = null
     if ((!config.append) && config.seed!=null) {
@@ -337,12 +340,12 @@ object WalletGenerator extends App {
         println("private key  : " + Base58.encode(privateKey))
         println("account seed : " + Base58.encode(accountSeedHash))
         println("-" * 150)
-        csv.write(nonce + "," + Base58.encode(accountSeedHash) + "," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
+        if (config.csv) csvFile.write(nonce + "," + address + "," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + Base58.encode(accountSeedHash) + "," + seed + "\n")
       }
 
     }
 
-    csv.close()
+    if (config.csv) csvFile.close()
 
     walletData = WalletData(seed, accounts, lastNonce + config.count, agentString)
 

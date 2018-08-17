@@ -6,17 +6,18 @@ This tool generates VEE wallet file with 15-word seed phrase. The output is expo
 
 ```
 $ java -jar walletgenerator.jar --help
-VEE wallet generator 0.0.3
+VEE Wallet Generator 0.0.4
 Usage: walletgenerator [options]
 
-  -a, --append            append to existing wallet.dat / addresses.csv
+  -a, --append            append to existing wallet file
   -c, --count <value>     number of addresses to generate
   -t, --testnet           generate testnet addresses
   -p, --password <value>  wallet password
   -f, --filter <value>    filter addresses with a specific pattern
   -s, --case-sensitive    case sensitive filtering
-  -k, --seed <value>      set wallet seed for address recovery
-  -d, --decrypt           decrypt and print existing json wallet file
+  -k, --seed <value>      set wallet seed for account recovery
+  -d, --decrypt           decrypt and print existing wallet file
+  -v, --csv               print keys to csv file also
   --help                  prints this help message
 ```	
 
