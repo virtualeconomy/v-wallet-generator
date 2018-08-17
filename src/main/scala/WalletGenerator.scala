@@ -12,8 +12,7 @@ import play.api.libs.json._
 import utils.{ByteStr, JsonFileStorage}
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "",
-                  filter: String = "", sensitive: Boolean = false, seed: String = null, useJson: Boolean = true,
-                  decrypt: Boolean = false)
+                  filter: String = "", sensitive: Boolean = false, seed: String = null, decrypt: Boolean = false)
 
 case class WalletData(seed: String, accountSeeds: LinkedHashSet[ByteStr], nonce: Long, agent: String)
 
@@ -42,8 +41,6 @@ object WalletGenerator extends App {
       c.copy(sensitive = true)).text("case sensitive filtering")
     opt[String]('k', "seed").action((x, c) =>
       c.copy(seed = x)).text("set wallet seed for account recovery")
-    opt[Unit]('j', "use-json").action((_, c) =>
-      c.copy(useJson = true)).text("load JSON format wallet data (MVStore will be deprecated)")
     opt[Unit]('d', "decrypt").action((_, c) =>
       c.copy(decrypt = true)).text("decrypt and print existing json wallet file")
     help("help") text("prints this help message")
