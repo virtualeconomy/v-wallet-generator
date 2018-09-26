@@ -37,7 +37,7 @@ scala> WalletGenerator.main(Array("--testnet", "--count", "10"))
 
 ## Examples
 
-Generate testnet addresses. Output to screen, wallet.dat and addresses.csv.
+Generate testnet addresses. Output to screen, wallet.dat and addresses.csv (optional).
 ```
 sbt:walletgenerator> run --testnet --count 3
 [info] Running WalletGenerator --testnet --count 3
