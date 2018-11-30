@@ -1,5 +1,5 @@
-# VEE wallet generator
-This tool generates VEE wallet file with 15-word seed phrase. The output is exported to 'wallet.dat' which is compatible with [VEE wallet format specification 1.0](https://github.com/excelsia/rfcs/blob/master/text/0001-wallet-format-specification.md) and can be used with full node,  as well as a CSV file 'addresses.csv', which contains the list of all generated addresses with seeds, private keys and public keys.
+# VSYS wallet generator
+This tool generates VSYS wallet file with 15-word seed phrase. The output is exported to 'wallet.dat' which is compatible with [VEE wallet format specification 1.0](https://github.com/excelsia/rfcs/blob/master/text/0001-wallet-format-specification.md) and can be used with full node,  as well as a CSV file 'addresses.csv', which contains the list of all generated addresses with seeds, private keys and public keys.
 
 
 ## Usage Java
