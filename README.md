@@ -1,12 +1,12 @@
-# VSYS wallet generator
-This tool generates VSYS wallet file with 15-word seed phrase. The output is exported to 'wallet.dat' which is compatible with [VEE wallet format specification 1.0](https://github.com/excelsia/rfcs/blob/master/text/0001-wallet-format-specification.md) and can be used with full node,  as well as a CSV file 'addresses.csv', which contains the list of all generated addresses with seeds, private keys and public keys.
+# V Wallet Generator
+This tool generates V Systems wallet file with 15-word seed phrase. The output is exported to 'wallet.dat' which is compatible with [V Systems wallet format specification 1.0](https://github.com/virtualeconomy/rfcs/blob/master/text/0001-wallet-format-specification.md) and can be used with full node,  as well as a CSV file 'addresses.csv', which contains the list of all generated addresses with seeds, private keys and public keys.
 
 
 ## Usage Java
 
 ```
 $ java -jar walletgenerator.jar --help
-VEE Wallet Generator 0.1.0
+V Wallet Generator 0.1.0
 Usage: walletgenerator [options]
 
   -a, --append            append to existing wallet file
