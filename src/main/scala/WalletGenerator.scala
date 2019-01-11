@@ -276,7 +276,7 @@ object WalletGenerator extends App {
             println("Failed to open existing wallet file. Maybe the provided password is incorrect")
           }
         }
-        }
+      }
       else {
         println("Wallet file not found")
       }
