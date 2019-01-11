@@ -268,7 +268,14 @@ object WalletGenerator extends App {
 
     if (config.decrypt) {
       if (WalletFile.exists()) {
-        println(JsonFileStorage.decrypt(walletFileName, Option(JsonFileStorage.prepareKey(config.password))))
+        try {
+          println(JsonFileStorage.decrypt(walletFileName, Option(JsonFileStorage.prepareKey(config.password))))
+        }
+        catch {
+          case _: Throwable => {
+            println("Failed to open existing wallet file. Maybe the provided password is incorrect")
+          }
+        }
       }
       else {
         println("Wallet file not found")
