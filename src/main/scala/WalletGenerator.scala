@@ -46,7 +46,6 @@ object WalletGenerator extends App {
       c.copy(decrypt = true)).text("decrypt and print existing wallet file")
     opt[Unit]('v', "csv").action((_, c) =>
       c.copy(csv = true)).text("print keys to csv file also")
-    help("help") text("prints this help message")
   }
   private def generatePhrase = {
     val wordList: List[String] = List("abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse", "access",
