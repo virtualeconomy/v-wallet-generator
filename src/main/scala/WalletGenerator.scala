@@ -279,84 +279,84 @@ object WalletGenerator extends App {
       else {
         println("Wallet file not found")
       }
-      sys.exit()
     }
-    if (!config.append) new File(walletFileName).delete()
-    var walletData: WalletData = null
-    if (WalletFile.exists()) {
-      try {
-        walletData = JsonFileStorage.load[WalletData](walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
-      }
-      catch {
-        case e: JsResultException => {
-          println("Malformed JSON wallet format, try --decrypt option to dump the wallet file")
+    else {
+      if (!config.append) new File(walletFileName).delete()
+      var walletData: WalletData = null
+      if (WalletFile.exists()) {
+        try {
+          walletData = JsonFileStorage.load[WalletData](walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
+        }
+        catch {
+          case e: JsResultException => {
+            println("Malformed JSON wallet format, try --decrypt option to dump the wallet file")
+            sys.exit()
+          }
+          case _: Throwable => {
+            println("Invalid wallet file format, try --decrypt option to dump the wallet file")
+            sys.exit()
+          }
+        }
+        if (config.testnet && !walletData.agent.endsWith("/testnet")) {
+          println("Must not use --testnet option to append to a non-testnet wallet.")
           sys.exit()
         }
-        case _: Throwable => {
-          println("Invalid wallet file format, try --decrypt option to dump the wallet file")
+        if ((!config.testnet) && !walletData.agent.endsWith("/mainnet")) {
+          println("Must use --testnet option to append to a testnet wallet.")
           sys.exit()
         }
+      } else {
+        walletData = WalletData("", LinkedHashSet.empty, 0, agentString)
       }
-      if (config.testnet && !walletData.agent.endsWith("/testnet")) {
-        println("Must not use --testnet option to append to a non-testnet wallet.")
-        sys.exit()
+
+      val csvFile = if (config.csv) new FileWriter(AddressesCSVFileName, config.append) else null
+
+      var seed: String = null
+      if ((!config.append) && config.seed != null) {
+        seed = config.seed
+      } else if (walletData.seed != "") {
+        seed = walletData.seed
       }
-      if ((!config.testnet) && !walletData.agent.endsWith("/mainnet")) {
-        println("Must use --testnet option to append to a testnet wallet.")
-        sys.exit()
-      }
-    } else {
-      walletData = WalletData("", LinkedHashSet.empty, 0, agentString)
-    }
+      if (seed == null || seed.equals("")) seed = generatePhrase
+      println("-" * 150)
+      println("IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!")
+      println("seed         : " + seed)
+      println("-" * 150)
 
-    val csvFile = if (config.csv) new FileWriter(AddressesCSVFileName, config.append) else null
+      var lastNonce: Long = 0
+      if (config.append) lastNonce = walletData.nonce
 
-    var seed: String = null
-    if ((!config.append) && config.seed!=null) {
-      seed = config.seed
-    } else if (walletData.seed != ""){
-      seed = walletData.seed
-    }
-    if (seed == null || seed.equals("")) seed = generatePhrase
-    println("-" * 150)
-    println("IMPORTANT - COPY OR MEMORIZE THE SEED PHRASE BELOW FOR KEY RECOVERY!!!")
-    println("seed         : " + seed)
-    println("-" * 150)
-
-    var lastNonce : Long = 0
-    if (config.append) lastNonce = walletData.nonce
-
-    var accounts : LinkedHashSet[ByteStr] = walletData.accountSeeds
+      var accounts: LinkedHashSet[ByteStr] = walletData.accountSeeds
 
 
-    for(n <- 1 to config.count) {
-      val nonce : Long = lastNonce + n - 1
-      val noncedSeed = nonce.toString + seed
-      val accountSeedHash = hashChain(noncedSeed.getBytes("UTF-8"))
-      val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
-      val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
-      val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
-      if ((address.toUpperCase.indexOf(config.filter) > 0 && !config.sensitive) ||
+      for (n <- 1 to config.count) {
+        val nonce: Long = lastNonce + n - 1
+        val noncedSeed = nonce.toString + seed
+        val accountSeedHash = hashChain(noncedSeed.getBytes("UTF-8"))
+        val (privateKey, publicKey) = Curve25519.createKeyPair(accountSeedHash)
+        val unchecksumedAddress = addrVersion +: chainId +: hashChain(publicKey).take(20)
+        val address = Base58.encode(unchecksumedAddress ++ hashChain(unchecksumedAddress).take(4))
+        if ((address.toUpperCase.indexOf(config.filter) > 0 && !config.sensitive) ||
           (address.indexOf(config.filter) > 0 && config.sensitive) || config.filter == "") {
-        accounts += ByteStr(accountSeedHash)
+          accounts += ByteStr(accountSeedHash)
 
-        println("address #    : " + nonce)
-        println("address      : " + address)
-        println("public key   : " + Base58.encode(publicKey))
-        println("private key  : " + Base58.encode(privateKey))
-        println("account seed : " + Base58.encode(accountSeedHash))
-        println("-" * 150)
-        if (config.csv) csvFile.write(nonce + "," + address + "," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + Base58.encode(accountSeedHash) + "," + seed + "\n")
+          println("address #    : " + nonce)
+          println("address      : " + address)
+          println("public key   : " + Base58.encode(publicKey))
+          println("private key  : " + Base58.encode(privateKey))
+          println("account seed : " + Base58.encode(accountSeedHash))
+          println("-" * 150)
+          if (config.csv) csvFile.write(nonce + "," + address + "," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + Base58.encode(accountSeedHash) + "," + seed + "\n")
+        }
+
       }
 
+      if (config.csv) csvFile.close()
+
+      walletData = WalletData(seed, accounts, lastNonce + config.count, agentString)
+
+      JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
+      true
     }
-
-    if (config.csv) csvFile.close()
-
-    walletData = WalletData(seed, accounts, lastNonce + config.count, agentString)
-
-    JsonFileStorage.save(walletData, walletFileName, Option(JsonFileStorage.prepareKey(config.password)))
-    true
   }
-
 }
