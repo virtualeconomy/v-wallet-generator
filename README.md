@@ -4,7 +4,7 @@ This tool generates V Systems wallet file with 15-word seed phrase. The output i
 
 ## Usage Java
 
-```
+```sh
 $ java -jar walletgenerator.jar --help
 V Wallet Generator 0.1.0
 Usage: walletgenerator [options]
@@ -23,22 +23,23 @@ Usage: walletgenerator [options]
 
 ## Usage Sbt
 
-```
+```sh
 $ sbt
 sbt:walletgenerator> run --testnet
 ```
 
 ## Usage Sbt Console
 
-```
+```sh
 $ sbt console
 scala> WalletGenerator.main(Array("--testnet", "--count", "10"))
 ```
 
 ## Examples
+**Notice:** Please use `/wallet/seed` API to get the correct(none Base58) seed of the node
 
 Generate testnet addresses. Output to screen, wallet.dat and addresses.csv (optional).
-```
+```sh
 sbt:walletgenerator> run --testnet --count 3
 [info] Running WalletGenerator --testnet --count 3
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,26 +67,26 @@ account seed : D1SMMbPYV9f4g11qJScdz6JCe6mxfdppa7EvCqq9LNFZ
 ```
 
 Recover wallet with a seed phrase.
-```
+```sh
 sbt:walletgenerator> run --testnet --count 3 --seed "welcome scheme bargain boring enable include slogan announce girl rough mention thought ski script vague"
 ```
 
 Decrypt and print JSON wallet (with empty password).
-```
+```sh
 sbt:walletgenerator> run --decrypt
 ```
 
 Generate 100 mainnet addresses. Output to screen, wallet.dat (encrypted with 'mypassword') and addresses.csv
-```
+```sh
 $ java -jar walletgenerator.jar -c 100 -p mypassword  
 ```
 
 Generate 100 addresses. Output to screen, append to existing wallet.dat (encrypted with 'mypassword') and addresses.csv
-```
+```sh
 $ java -jar walletgenerator.jar -a -c 100 -p mypassword  
 ```
 
 Recovery 10 addresses by input seed. Output to screen, wallet.dat (encrypted with 'mypassword') and addresses.csv
-```
+```sh
 $ java -jar walletgenerator.jar -c 10 -p mypassword -k "stem extra father tail struggle dinner uphold sight canoe draw moon swim amused grab mule gadget bubble hub"
 ```
