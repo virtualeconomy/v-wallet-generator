@@ -2,7 +2,7 @@ name := "walletgenerator"
 
 version := "1.0"
 
-scalaVersion := "2.12.0"
+scalaVersion := "2.12.12"
 
 libraryDependencies += "org.scorexfoundation" %% "scrypto" % "1.2.0"
 
