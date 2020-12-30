@@ -1,6 +1,7 @@
 # V Wallet Generator
-This tool generates V Systems wallet file with 15-word seed phrase. The output is exported to 'wallet.dat' which is compatible with [V Systems wallet format specification 1.0](https://github.com/virtualeconomy/rfcs/blob/master/text/0001-wallet-format-specification.md) and can be used with full node,  as well as a CSV file 'addresses.csv', which contains the list of all generated addresses with seeds, private keys and public keys.
+This tool generates V Systems wallet file with 15-word seed phrase. The output is exported to `wallet.dat` which is compatible with [V Systems wallet format specification 1.0](https://github.com/virtualeconomy/rfcs/blob/master/text/0001-wallet-format-specification.md) and can be used with full node,  as well as a CSV file `addresses.csv`, which contains the list of all generated addresses with seeds, private keys and public keys.
 
+If using the generated wallet file with V Systems node, one can use the node API `/wallet/seed` to confirm the correct wallet seed is used.
 
 ## Usage Java
 
@@ -36,8 +37,6 @@ scala> WalletGenerator.main(Array("--testnet", "--count", "10"))
 ```
 
 ## Examples
-**Notice:** Please use `/wallet/seed` API to get the correct(none Base58) seed of the node
-
 Generate testnet addresses. Output to screen, wallet.dat and addresses.csv (optional).
 ```sh
 sbt:walletgenerator> run --testnet --count 3
